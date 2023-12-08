@@ -1,5 +1,34 @@
+use std::{iter::repeat, ops::BitXor};
+
 fn main() {
-    println!("Hello, world!");
+    let m1 = [
+        true, true, false, true, false, false, false, true, true, false, true,
+    ];
+    let k = [true, false, true];
+    let pretty_k: Vec<u8> = repeat(k)
+        .flat_map(|x| x.iter().map(|b| *b as u8).collect::<Vec<u8>>())
+        .take(m1.len())
+        .collect();
+    println!("{:?}", m1.map(|b| b as u8));
+    println!("{:?}", pretty_k);
+    let m2 = verenc::<[bool; 11], Vec<bool>, bool, bool, [bool; 3]>(m1, k);
+    println!("{:?}", m2.iter().map(|b| *b as u8).collect::<Vec<u8>>());
+    println!("{:?}", pretty_k);
+    let m3 = verenc::<Vec<bool>, Vec<bool>, bool, bool, [bool; 3]>(m2, k);
+    println!("{:?}", m3.iter().map(|b| *b as u8).collect::<Vec<u8>>());
 }
 
-type M = [bool];
+fn verenc<M1, M2, O1, O2, K>(message: M1, key: K) -> M2
+where
+    M1: IntoIterator<Item = O1>,
+    K: IntoIterator<Item = O2>,
+    O1: BitXor<O2, Output = O1>,
+    <K as IntoIterator>::IntoIter: Clone,
+    M2: FromIterator<O1>,
+{
+    message
+        .into_iter()
+        .zip(key.into_iter().cycle())
+        .map(|(m, k)| m ^ k)
+        .collect()
+}
