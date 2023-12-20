@@ -21,10 +21,10 @@ fn main() {
 fn verenc<M1, M2, O1, O2, K>(message: M1, key: K) -> M2
 where
     M1: IntoIterator<Item = O1>,
-    K: IntoIterator<Item = O2>,
-    O1: BitXor<O2, Output = O1>,
-    <K as IntoIterator>::IntoIter: Clone,
     M2: FromIterator<O1>,
+    K: IntoIterator<Item = O2>,
+    <K as IntoIterator>::IntoIter: Clone,
+    O1: BitXor<O2, Output = O1>,
 {
     message
         .into_iter()
