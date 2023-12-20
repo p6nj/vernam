@@ -2,20 +2,26 @@ use std::{iter::repeat, ops::BitXor};
 
 fn main() {
     let m1 = [
-        true, true, false, true, false, false, false, true, true, false, true,
+        true, false, true, true, false, true, false, true, false, true, false,
     ];
-    let k = [true, false, true];
+    let k = [true, true, false, false];
     let pretty_k: Vec<u8> = repeat(k)
         .flat_map(|x| x.iter().map(|b| *b as u8).collect::<Vec<u8>>())
         .take(m1.len())
         .collect();
-    println!("{:?}", m1.map(|b| b as u8));
-    println!("{:?}", pretty_k);
-    let m2 = verenc::<[bool; 11], Vec<bool>, bool, bool, [bool; 3]>(m1, k);
-    println!("{:?}", m2.iter().map(|b| *b as u8).collect::<Vec<u8>>());
-    println!("{:?}", pretty_k);
-    let m3 = verenc::<Vec<bool>, Vec<bool>, bool, bool, [bool; 3]>(m2, k);
-    println!("{:?}", m3.iter().map(|b| *b as u8).collect::<Vec<u8>>());
+    println!("M  = {:?}", m1.map(|b| b as u8));
+    println!("K  = {:?}", pretty_k);
+    let m2 = verenc::<[bool; 11], Vec<bool>, bool, bool, [bool; 4]>(m1, k);
+    println!(
+        "M' = {:?}",
+        m2.iter().map(|b| *b as u8).collect::<Vec<u8>>()
+    );
+    println!("K  = {:?}", pretty_k);
+    let m3 = verenc::<Vec<bool>, Vec<bool>, bool, bool, [bool; 4]>(m2, k);
+    println!(
+        "M''= {:?}",
+        m3.iter().map(|b| *b as u8).collect::<Vec<u8>>()
+    );
 }
 
 fn verenc<M1, M2, O1, O2, K>(message: M1, key: K) -> M2
